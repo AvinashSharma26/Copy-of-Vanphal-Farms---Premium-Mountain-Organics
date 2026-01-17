@@ -12,7 +12,7 @@ const AdminDashboard: React.FC = () => {
   const { 
     products, offers, categories: allCategories, 
     addProduct, updateProduct, deleteProduct,
-    addCategory, deleteCategory,
+    addCategory, updateCategory, deleteCategory,
     addOffer, updateOffer, deleteOffer, toggleOffer 
   } = useData();
   
@@ -36,7 +36,11 @@ const AdminDashboard: React.FC = () => {
   const [mainImageBase64, setMainImageBase64] = useState<string>('');
   const [galleryImagesBase64, setGalleryImagesBase64] = useState<string[]>([]);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
+  
+  // Category management local state
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [editCategoryValue, setEditCategoryValue] = useState('');
 
   const hasUnreadTickets = tickets.some(t => t.unreadAdmin);
 
@@ -224,6 +228,34 @@ const AdminDashboard: React.FC = () => {
       message: replyText
     });
     setReplyText('');
+  };
+
+  // Category Actions
+  const handleAddCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newCategoryName.trim()) {
+      addCategory(newCategoryName);
+      setNewCategoryName('');
+    }
+  };
+
+  const handleStartEditCategory = (cat: string) => {
+    setEditingCategory(cat);
+    setEditCategoryValue(cat);
+  };
+
+  const handleUpdateCategory = () => {
+    if (editingCategory && editCategoryValue.trim()) {
+      updateCategory(editingCategory, editCategoryValue);
+      setEditingCategory(null);
+      setEditCategoryValue('');
+    }
+  };
+
+  const handleDeleteCategory = (cat: string) => {
+    if (window.confirm(`Delete category "${cat}"? This will remove it from all associated products.`)) {
+      deleteCategory(cat);
+    }
   };
 
   return (
@@ -740,6 +772,64 @@ const AdminDashboard: React.FC = () => {
                 <button type="submit" className="w-full bg-[#1a2323] text-white py-5 rounded-2xl font-bold uppercase tracking-widest text-[10px]">Save Promotion</button>
              </form>
           </div>
+        </div>
+      )}
+
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 backdrop-blur-xl bg-[#1a2323]/40">
+           <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl h-[70vh] flex flex-col overflow-hidden animate-slideUp">
+              <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-[#fcfbf7]">
+                <div>
+                  <h3 className="text-2xl font-bold serif">Category Management</h3>
+                  <p className="text-[9px] uppercase font-bold tracking-widest text-gray-400 mt-1">Organize your Harvest Collection</p>
+                </div>
+                <button onClick={() => setShowCategoryModal(false)} className="p-2 hover:bg-gray-100 rounded-full"><ICONS.Close /></button>
+              </div>
+
+              <div className="p-8 bg-white border-b border-gray-50">
+                <form onSubmit={handleAddCategory} className="flex gap-3">
+                  <input 
+                    type="text" 
+                    value={newCategoryName} 
+                    onChange={e => setNewCategoryName(e.target.value)} 
+                    placeholder="e.g. Rare Berries"
+                    className="flex-grow bg-gray-50 rounded-2xl px-6 py-4 text-sm outline-none border border-transparent focus:border-[#4a5d4e] transition-all"
+                  />
+                  <button type="submit" className="bg-[#4a5d4e] text-white px-8 py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg">+ Add</button>
+                </form>
+              </div>
+
+              <div className="flex-grow overflow-y-auto p-8 space-y-4 bg-gray-50/20">
+                {allCategories.map(cat => (
+                  <div key={cat} className="bg-white p-5 rounded-[2rem] border border-gray-100 flex items-center justify-between group shadow-sm">
+                    {editingCategory === cat ? (
+                      <div className="flex-grow flex gap-3">
+                        <input 
+                          autoFocus
+                          value={editCategoryValue} 
+                          onChange={e => setEditCategoryValue(e.target.value)} 
+                          className="flex-grow bg-gray-50 rounded-xl px-4 py-2 text-sm outline-none border border-[#4a5d4e]"
+                        />
+                        <button onClick={handleUpdateCategory} className="text-green-600 font-bold text-[10px] uppercase">Save</button>
+                        <button onClick={() => setEditingCategory(null)} className="text-gray-400 font-bold text-[10px] uppercase">Cancel</button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="font-bold text-sm text-[#2d3a3a]">{cat}</span>
+                        <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => handleStartEditCategory(cat)} className="text-blue-500 font-bold text-[10px] uppercase tracking-widest hover:underline">Edit</button>
+                          <button onClick={() => handleDeleteCategory(cat)} className="text-red-500 font-bold text-[10px] uppercase tracking-widest hover:underline">Delete</button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-6 bg-[#fcfbf7] border-t border-gray-50 text-center">
+                <p className="text-[9px] text-gray-300 uppercase tracking-widest font-bold">Modifying a category affects all associated products.</p>
+              </div>
+           </div>
         </div>
       )}
 

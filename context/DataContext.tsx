@@ -13,6 +13,7 @@ interface DataContextType {
   updateProduct: (p: Product) => void;
   deleteProduct: (id: string) => void;
   addCategory: (name: string) => void;
+  updateCategory: (oldName: string, newName: string) => void;
   deleteCategory: (name: string) => void;
   addOffer: (o: Offer) => void;
   updateOffer: (o: Offer) => void;
@@ -58,10 +59,40 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addCategory = (name: string) => {
-    if (!categories.includes(name)) setCategories(prev => [...prev, name]);
+    const trimmed = name.trim();
+    if (trimmed && !categories.includes(trimmed)) {
+      setCategories(prev => [...prev, trimmed]);
+    }
   };
+
+  const updateCategory = (oldName: string, newName: string) => {
+    const trimmed = newName.trim();
+    if (!trimmed || oldName === trimmed) return;
+
+    // 1. Update global categories list
+    setCategories(prev => prev.map(c => c === oldName ? trimmed : c));
+
+    // 2. Update all products that contain this category
+    setProducts(prev => prev.map(p => {
+      if (p.categories?.includes(oldName)) {
+        return {
+          ...p,
+          categories: p.categories.map(c => c === oldName ? trimmed : c)
+        };
+      }
+      return p;
+    }));
+  };
+
   const deleteCategory = (name: string) => {
+    // 1. Remove from global list
     setCategories(prev => prev.filter(c => c !== name));
+    
+    // 2. Remove from all products
+    setProducts(prev => prev.map(p => ({
+      ...p,
+      categories: p.categories?.filter(c => c !== name) || []
+    })));
   };
 
   const addOffer = (o: Offer) => setOffers(prev => [o, ...prev]);
@@ -75,7 +106,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <DataContext.Provider value={{ 
       products, offers, categories, 
       addProduct, updateProduct, deleteProduct,
-      addCategory, deleteCategory,
+      addCategory, updateCategory, deleteCategory,
       addOffer, updateOffer, deleteOffer, toggleOffer
     }}>
       {children}
