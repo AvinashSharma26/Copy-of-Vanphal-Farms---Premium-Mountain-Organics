@@ -27,18 +27,15 @@ const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener('scroll', handleScroll);
-    
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % suggestions.length);
     }, 4000);
-
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchFocused(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
@@ -86,7 +83,6 @@ const Header: React.FC = () => {
           <Link to="/" className={`text-2xl font-bold serif shrink-0 tracking-tight ${textClasses}`}>
             Vanphal Farms
           </Link>
-
           <nav className="hidden lg:flex items-center gap-10">
             {navLinks.map((link) => (
               <Link 
@@ -101,7 +97,6 @@ const Header: React.FC = () => {
               </Link>
             ))}
           </nav>
-
           <div ref={searchRef} className="hidden md:flex flex-grow max-w-sm relative">
             <form onSubmit={handleSearch} className="w-full relative">
               <input 
@@ -116,7 +111,6 @@ const Header: React.FC = () => {
                 <ICONS.Search />
               </button>
             </form>
-
             {isSearchFocused && searchQuery && (
               <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-fadeIn text-gray-800">
                 <div className="p-3">
@@ -145,7 +139,6 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
-
           <div className="flex items-center gap-6">
             <Link to={user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'} className={`transition-opacity hover:opacity-60 ${textClasses}`}>
               <ICONS.User />
@@ -180,35 +173,39 @@ const Footer: React.FC = () => (
             Bringing the authentic, unadulterated taste of Himalayan orchards to modern homes. Pure, organic, and rooted in tradition.
           </p>
           <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-sm hover:bg-white hover:text-black transition-all cursor-pointer">IG</div>
-            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-sm hover:bg-white hover:text-black transition-all cursor-pointer">FB</div>
+            <a href="#" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-sm hover:bg-white hover:text-black transition-all cursor-pointer">
+              <ICONS.Instagram />
+            </a>
+            <a href="#" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-sm hover:bg-white hover:text-black transition-all cursor-pointer">
+              <ICONS.Facebook />
+            </a>
+            <a href="#" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-sm hover:bg-white hover:text-black transition-all cursor-pointer">
+              <ICONS.Twitter />
+            </a>
           </div>
         </div>
-        
         <div>
           <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-8 text-white/40">The Collection</h4>
           <ul className="space-y-4 text-sm text-gray-400">
             <li><Link to="/shop" className="hover:text-white transition-colors">Artisanal Jams</Link></li>
             <li><Link to="/shop" className="hover:text-white transition-colors">Fruit Preserves</Link></li>
             <li><Link to="/shop" className="hover:text-white transition-colors">Seasonal Chutneys</Link></li>
-            <li><Link to="/shop" className="hover:text-white transition-colors">Gift Hampers</Link></li>
           </ul>
         </div>
-
         <div>
           <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-8 text-white/40">Information</h4>
           <ul className="space-y-4 text-sm text-gray-400">
             <li><Link to="/story" className="hover:text-white transition-colors">Our Story</Link></li>
             <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-            <li><Link to="/shipping" className="hover:text-white transition-colors">Shipping Policy</Link></li>
-            <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+            <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping & Refund</Link></li>
+            <li><Link to="/terms-conditions" className="hover:text-white transition-colors">Terms of Service</Link></li>
+            <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
           </ul>
         </div>
-
         <div>
           <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-8 text-white/40">Himalayan Dispatch</h4>
           <p className="text-sm text-gray-400 mb-6">Subscribe to get seasonal updates and stories from the hills.</p>
-          <form className="relative">
+          <form className="relative" onSubmit={(e) => e.preventDefault()}>
             <input 
               type="email" 
               placeholder="Your email address" 
@@ -221,10 +218,10 @@ const Footer: React.FC = () => (
         </div>
       </div>
       <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6 text-[11px] text-gray-500 font-bold uppercase tracking-widest">
-        <p>&copy; 2024 Vanphal Farms. All Rights Reserved.</p>
+        <p>&copy; 2026 Vanphal Farms. All Rights Reserved.</p>
         <div className="flex gap-8">
-          <span>Uttarakhand, India</span>
-          <span>Designed with Nature</span>
+          <span>Himachal, India</span>
+          <span>Crafted in the Wilderness</span>
         </div>
       </div>
     </div>

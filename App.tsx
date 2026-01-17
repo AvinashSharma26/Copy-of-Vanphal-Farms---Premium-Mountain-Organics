@@ -17,6 +17,7 @@ import UserDashboard from './pages/UserDashboard';
 import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import Success from './pages/Success';
+import { PrivacyPolicy, TermsConditions, ShippingRefund } from './pages/LegalPages';
 
 const App: React.FC = () => {
   return (
@@ -37,6 +38,9 @@ const App: React.FC = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/success" element={<Success />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-conditions" element={<TermsConditions />} />
+                <Route path="/shipping-policy" element={<ShippingRefund />} />
               </Routes>
             </Layout>
           </CartProvider>

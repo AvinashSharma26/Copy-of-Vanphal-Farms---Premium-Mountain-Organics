@@ -1,14 +1,18 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, Offer } from '../types';
+import { Product, Offer, SiteSettings } from '../types';
 import { PRODUCTS as INITIAL_PRODUCTS, OFFERS as INITIAL_OFFERS } from '../constants';
 
 const DEFAULT_CATEGORIES = ['Jams', 'Preserves', 'Chutneys', 'Seasonal', 'Organic'];
+const DEFAULT_SETTINGS: SiteSettings = {
+  heroImages: ['https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2000']
+};
 
 interface DataContextType {
   products: Product[];
   offers: Offer[];
   categories: string[];
+  settings: SiteSettings;
   addProduct: (p: Product) => void;
   updateProduct: (oldId: string, p: Product) => void;
   deleteProduct: (id: string) => void;
@@ -19,6 +23,7 @@ interface DataContextType {
   updateOffer: (o: Offer) => void;
   deleteOffer: (id: string) => void;
   toggleOffer: (id: string) => void;
+  updateSettings: (s: SiteSettings) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -39,7 +44,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
   });
 
-  // Sync to localStorage whenever state changes
+  const [settings, setSettings] = useState<SiteSettings>(() => {
+    const saved = localStorage.getItem('vanphal_site_settings');
+    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+  });
+
   useEffect(() => {
     localStorage.setItem('vanphal_admin_products', JSON.stringify(products));
   }, [products]);
@@ -51,6 +60,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     localStorage.setItem('vanphal_admin_categories', JSON.stringify(categories));
   }, [categories]);
+
+  useEffect(() => {
+    localStorage.setItem('vanphal_site_settings', JSON.stringify(settings));
+  }, [settings]);
 
   const addProduct = (p: Product) => setProducts(prev => [p, ...prev]);
   
@@ -72,30 +85,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateCategory = (oldName: string, newName: string) => {
     const trimmed = newName.trim();
     if (!trimmed || oldName === trimmed) return;
-
-    // 1. Update global categories list
     setCategories(prev => prev.map(c => c === oldName ? trimmed : c));
-
-    // 2. Update all products that contain this category
     setProducts(prev => prev.map(p => {
       if (p.categories?.includes(oldName)) {
-        return {
-          ...p,
-          categories: p.categories.map(c => c === oldName ? trimmed : c)
-        };
+        return { ...p, categories: p.categories.map(c => c === oldName ? trimmed : c) };
       }
       return p;
     }));
   };
 
   const deleteCategory = (name: string) => {
-    // 1. Remove from global list
     setCategories(prev => prev.filter(c => c !== name));
-    
-    // 2. Remove from all products
     setProducts(prev => prev.map(p => ({
-      ...p,
-      categories: p.categories?.filter(c => c !== name) || []
+      ...p, categories: p.categories?.filter(c => c !== name) || []
     })));
   };
 
@@ -106,12 +108,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   const toggleOffer = (id: string) => setOffers(prev => prev.map(o => o.id === id ? { ...o, isActive: !o.isActive } : o));
 
+  const updateSettings = (s: SiteSettings) => setSettings(s);
+
   return (
     <DataContext.Provider value={{ 
-      products, offers, categories, 
+      products, offers, categories, settings,
       addProduct, updateProduct, deleteProduct,
       addCategory, updateCategory, deleteCategory,
-      addOffer, updateOffer, deleteOffer, toggleOffer
+      addOffer, updateOffer, deleteOffer, toggleOffer,
+      updateSettings
     }}>
       {children}
     </DataContext.Provider>
