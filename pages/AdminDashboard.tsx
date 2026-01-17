@@ -180,6 +180,18 @@ const AdminDashboard: React.FC = () => {
     setGalleryImagesBase64([]);
   };
 
+  const handleDuplicateProduct = (p: Product) => {
+    const newId = `${p.id}-COPY-${Math.floor(Math.random() * 999)}`;
+    const duplicatedProduct: Product = {
+      ...p,
+      id: newId,
+      name: `${p.name} (Copy)`,
+      status: p.stock > 0 ? 'in-stock' : 'out-of-stock',
+    };
+    addProduct(duplicatedProduct);
+    alert(`Successfully duplicated: ${p.name}`);
+  };
+
   const handleSaveOffer = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -394,8 +406,9 @@ const AdminDashboard: React.FC = () => {
                         </td>
                         <td className="px-10 py-6 text-right">
                            <div className="flex justify-end gap-2">
-                             <button onClick={() => { setIsEditing(p); setMainImageBase64(p.image); setGalleryImagesBase64(p.images || []); setShowProductModal(true); }} className="p-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100"><ICONS.Edit /></button>
-                             <button onClick={() => { if(window.confirm(`Delete "${p.name}"?`)) deleteProduct(p.id); }} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100"><ICONS.Trash /></button>
+                             <button onClick={() => handleDuplicateProduct(p)} className="p-2 bg-purple-50 text-purple-500 rounded-lg hover:bg-purple-100" title="Duplicate"><ICONS.Copy /></button>
+                             <button onClick={() => { setIsEditing(p); setMainImageBase64(p.image); setGalleryImagesBase64(p.images || []); setShowProductModal(true); }} className="p-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100" title="Edit"><ICONS.Edit /></button>
+                             <button onClick={() => { if(window.confirm(`Delete "${p.name}"?`)) deleteProduct(p.id); }} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100" title="Delete"><ICONS.Trash /></button>
                            </div>
                         </td>
                       </tr>
