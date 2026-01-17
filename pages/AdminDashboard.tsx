@@ -169,7 +169,7 @@ const AdminDashboard: React.FC = () => {
     };
 
     if (isEditing) {
-      updateProduct(productData);
+      updateProduct(isEditing.id, productData);
     } else {
       addProduct(productData);
     }
