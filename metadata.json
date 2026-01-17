@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Vanphal Farms - Premium Mountain Organics",
+  "description": "A premium nature-inspired eCommerce platform for organic handcrafted jams from the mountains.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
