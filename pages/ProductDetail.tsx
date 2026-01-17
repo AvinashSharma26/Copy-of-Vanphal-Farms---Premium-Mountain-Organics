@@ -60,13 +60,19 @@ const ProductDetail: React.FC = () => {
         {/* Hero Section */}
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 mb-32">
           <div className="space-y-8">
-            <div className="aspect-[4/5] rounded-[3.5rem] overflow-hidden bg-white shadow-2xl border border-gray-100">
-              <img src={activeImage} alt={product.name} className="w-full h-full object-cover animate-fadeIn" />
+            <div className="aspect-[4/5] rounded-[3.5rem] overflow-hidden bg-white shadow-2xl border border-gray-100 group relative">
+              <img src={activeImage} alt={product.name} className="w-full h-full object-cover animate-fadeIn transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute top-8 left-8">
+                <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl flex items-center gap-3">
+                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                   <span className="text-[10px] font-bold uppercase tracking-widest text-[#2d3a3a]">Fresh From 2024 Harvest</span>
+                </div>
+              </div>
             </div>
             {allImages.length > 1 && (
               <div className="grid grid-cols-6 gap-3">
                 {allImages.map((img, i) => (
-                  <button key={i} onClick={() => setActiveImage(img)} className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-[#4a5d4e] shadow-lg' : 'border-transparent opacity-60'}`}>
+                  <button key={i} onClick={() => setActiveImage(img)} className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-[#4a5d4e] shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                     <img src={img} className="w-full h-full object-cover" alt="" />
                   </button>
                 ))}
@@ -81,7 +87,7 @@ const ProductDetail: React.FC = () => {
               <span className="text-[9px] uppercase font-bold tracking-widest text-gray-500 bg-gray-50 px-4 py-1.5 rounded-full border border-gray-100">{product.weight} Net</span>
             </div>
             
-            <h1 className="text-4xl lg:text-6xl font-bold serif mb-4 leading-tight text-[#2d3a3a]">{product.name}</h1>
+            <h1 className="text-4xl lg:text-7xl font-bold serif mb-4 leading-tight text-[#2d3a3a]">{product.name}</h1>
             
             <div className="flex items-center gap-6 mb-8">
               <span className="text-4xl lg:text-5xl font-bold serif text-[#4a5d4e]">₹{product.price}</span>
@@ -92,17 +98,40 @@ const ProductDetail: React.FC = () => {
 
             <div className="space-y-6 mb-10">
                <h4 className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#8b5e3c]">Sensory Profile</h4>
-               <p className="text-lg text-gray-500 font-light leading-relaxed">{product.description}</p>
+               <p className="text-xl text-gray-500 font-light leading-relaxed">{product.description}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-10">
-              <div className="bg-white p-6 rounded-3xl border border-gray-100">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Tasting Notes</p>
-                <p className="text-sm font-medium italic">"Rich, sun-drenched texture with a lingering mountain tartness."</p>
-              </div>
-              <div className="bg-white p-6 rounded-3xl border border-gray-100">
-                <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Ideal Pairing</p>
-                <p className="text-sm font-medium">Warm Sourdough, Aged Cheddar, or Fresh Greek Yogurt.</p>
+            {/* Tasting Profile Section */}
+            <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm mb-10 space-y-6">
+              <h4 className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Flavor Complexity</h4>
+              <div className="space-y-4">
+                 <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] font-bold uppercase text-gray-500">
+                       <span>Natural Sweetness</span>
+                       <span>85%</span>
+                    </div>
+                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                       <div className="h-full bg-[#8b5e3c]" style={{ width: '85%' }}></div>
+                    </div>
+                 </div>
+                 <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] font-bold uppercase text-gray-500">
+                       <span>Tart Acidity</span>
+                       <span>45%</span>
+                    </div>
+                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                       <div className="h-full bg-[#4a5d4e]" style={{ width: '45%' }}></div>
+                    </div>
+                 </div>
+                 <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] font-bold uppercase text-gray-500">
+                       <span>Fruit Texture</span>
+                       <span>Chunk-Rich</span>
+                    </div>
+                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                       <div className="h-full bg-[#2d3a3a]" style={{ width: '70%' }}></div>
+                    </div>
+                 </div>
               </div>
             </div>
 
@@ -131,39 +160,90 @@ const ProductDetail: React.FC = () => {
                 </ul>
               </div>
               <div className="space-y-4">
-                <h4 className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Nutritional Snap (20g)</h4>
-                <div className="grid grid-cols-2 gap-2 text-[10px] font-bold uppercase tracking-tighter">
-                  <div className="bg-gray-50 p-2 rounded-lg"><p className="text-gray-400">Cal</p><p>{product.nutrition.calories.split(' ')[0]}</p></div>
-                  <div className="bg-gray-50 p-2 rounded-lg"><p className="text-gray-400">Sugar</p><p>{product.nutrition.sugar}</p></div>
+                <h4 className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Shelf Life</h4>
+                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                   <p className="text-xs font-bold text-gray-600">12 Months (Unopened)</p>
+                   <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Refrigerate after opening</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* New Section: The Vanphal Heritage Process */}
-        <section className="mb-32 py-24 bg-white rounded-[4rem] px-8 lg:px-20 border border-gray-50">
+        {/* New Content Section: Micro-Batch Transparency */}
+        <section className="mb-32 py-20 px-10 bg-[#1a2323] rounded-[4rem] text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div className="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
+             <div>
+                <span className="text-[#8b5e3c] text-xs font-bold uppercase tracking-[0.4em] mb-6 block">Traceability Log</span>
+                <h2 className="text-4xl lg:text-5xl font-bold serif mb-8 leading-tight">Batch Transparency</h2>
+                <div className="space-y-8">
+                   <div className="flex gap-6 items-center">
+                      <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl">🏔️</div>
+                      <div>
+                         <p className="text-[10px] uppercase font-bold text-white/40">Orchard Location</p>
+                         <p className="text-lg font-bold">Mukteshwar Valley, 7200ft</p>
+                      </div>
+                   </div>
+                   <div className="flex gap-6 items-center">
+                      <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl">👩‍🌾</div>
+                      <div>
+                         <p className="text-[10px] uppercase font-bold text-white/40">Lead Orchardist</p>
+                         <p className="text-lg font-bold">Savitri Devi & Family</p>
+                      </div>
+                   </div>
+                   <div className="flex gap-6 items-center">
+                      <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl">🪵</div>
+                      <div>
+                         <p className="text-[10px] uppercase font-bold text-white/40">Curing Method</p>
+                         <p className="text-lg font-bold">8-Hour Slow Copper Simmer</p>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div className="bg-white/5 backdrop-blur-xl p-10 rounded-[3rem] border border-white/10">
+                <h4 className="text-xl font-bold serif mb-6">Pantry Usage Tips</h4>
+                <ul className="space-y-6">
+                   <li className="flex gap-4">
+                      <span className="text-[#8b5e3c] font-bold">01.</span>
+                      <p className="text-sm text-white/70 leading-relaxed">Always use a <span className="text-white font-bold">dry wooden spoon</span> to prevent moisture contamination in our preservative-free batch.</p>
+                   </li>
+                   <li className="flex gap-4">
+                      <span className="text-[#8b5e3c] font-bold">02.</span>
+                      <p className="text-sm text-white/70 leading-relaxed">Best enjoyed within <span className="text-white font-bold">90 days of opening</span> for peak enzymatic freshness.</p>
+                   </li>
+                   <li className="flex gap-4">
+                      <span className="text-[#8b5e3c] font-bold">03.</span>
+                      <p className="text-sm text-white/70 leading-relaxed">Store away from direct sunlight in a cool, shaded corner of your kitchen or pantry.</p>
+                   </li>
+                </ul>
+             </div>
+          </div>
+        </section>
+
+        {/* Mountain to Jar Timeline */}
+        <section className="mb-32">
           <div className="max-w-4xl mx-auto text-center mb-20">
             <span className="text-[#8b5e3c] text-xs font-bold uppercase tracking-[0.4em] mb-4 block">The Vanphal Heritage</span>
-            <h2 className="text-4xl lg:text-6xl font-bold serif mb-8">Orchard to Pantry Process</h2>
-            <p className="text-lg text-gray-500 font-light leading-relaxed">We don't just make jams; we preserve a way of life that has existed in the Himalayan hills for generations.</p>
+            <h2 className="text-4xl lg:text-6xl font-bold serif mb-8">Harvest Timeline</h2>
+            <p className="text-lg text-gray-500 font-light leading-relaxed">Every jar follows the rhythm of the mountain seasons, from the first frost to the final seal.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-12 lg:gap-20">
-            <div className="space-y-6 text-center">
-              <div className="w-20 h-20 bg-[#fcfbf7] rounded-full flex items-center justify-center mx-auto text-3xl shadow-sm border border-gray-100">☀️</div>
-              <h4 className="text-xl font-bold serif">The Solar Harvest</h4>
-              <p className="text-sm text-gray-400 leading-relaxed font-light">Fruits are hand-picked only when sun-ripened to peak sweetness, ensuring maximum natural flavor without additives.</p>
-            </div>
-            <div className="space-y-6 text-center">
-              <div className="w-20 h-20 bg-[#fcfbf7] rounded-full flex items-center justify-center mx-auto text-3xl shadow-sm border border-gray-100">🔥</div>
-              <h4 className="text-xl font-bold serif">Wood-Fired Simmer</h4>
-              <p className="text-sm text-gray-400 leading-relaxed font-light">Slow-cooked in open copper vessels over controlled mountain-wood fires to achieve that signature smoky, velvety finish.</p>
-            </div>
-            <div className="space-y-6 text-center">
-              <div className="w-20 h-20 bg-[#fcfbf7] rounded-full flex items-center justify-center mx-auto text-3xl shadow-sm border border-gray-100">🏔️</div>
-              <h4 className="text-xl font-bold serif">Glacial Purified</h4>
-              <p className="text-sm text-gray-400 leading-relaxed font-light">Every jar is vacuum-sealed using pure Himalayan spring water cooling techniques to maintain freshness naturally.</p>
-            </div>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { time: 'Week 1', title: 'Sun Ripening', desc: 'Fruits are left on the branch until they reach natural sugar peak under the high-altitude sun.' },
+              { time: 'Week 2', title: 'Hand Picking', desc: 'Each fruit is inspected and hand-picked at dawn to preserve the morning dew coolness.' },
+              { time: 'Day 15', title: 'Copper Curing', desc: 'Slow-cooked in open copper vessels over wood-fired pits for that signature smoky finish.' },
+              { time: 'Day 16', title: 'Glacial Sealing', desc: 'Vacuum-sealed using thermal techniques to lock in freshness without chemical additives.' }
+            ].map((step, i) => (
+              <div key={i} className="relative group">
+                <div className="p-10 bg-white rounded-[3rem] border border-gray-100 hover:shadow-xl transition-all h-full">
+                  <span className="text-[#8b5e3c] text-[10px] font-bold uppercase tracking-[0.2em] block mb-4">{step.time}</span>
+                  <h4 className="text-xl font-bold serif mb-3">{step.title}</h4>
+                  <p className="text-xs text-gray-400 leading-relaxed">{step.desc}</p>
+                </div>
+                {i < 3 && <div className="hidden lg:block absolute top-1/2 -right-4 translate-y-[-50%] text-2xl text-gray-100">→</div>}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -182,7 +262,7 @@ const ProductDetail: React.FC = () => {
               </div>
               <div className="flex items-center gap-3 bg-gray-50 px-5 py-2 rounded-full">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Powered by Gemini 2.0</p>
+                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Powered by Gemini AI</p>
               </div>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
@@ -212,28 +292,36 @@ const ProductDetail: React.FC = () => {
           </section>
         )}
 
-        {/* Additional Content: The Purity Promise */}
+        {/* Sustainable Heritage Section */}
         <section className="mb-32 grid lg:grid-cols-2 gap-20 items-center">
-          <div className="aspect-[16/9] rounded-[4rem] overflow-hidden shadow-xl">
+          <div className="aspect-[16/10] rounded-[4rem] overflow-hidden shadow-2xl relative">
              <img src="https://images.unsplash.com/photo-1511497584788-8767fe771d85?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover" alt="Mountain Orchard" />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+             <div className="absolute bottom-10 left-10 right-10 flex justify-between items-end text-white">
+                <div>
+                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Sustainable Impact</p>
+                   <h4 className="text-2xl serif font-bold">Rooted in Earth</h4>
+                </div>
+                <div className="text-xs font-bold bg-[#8b5e3c] px-4 py-2 rounded-full">ECO-SEALED</div>
+             </div>
           </div>
           <div className="space-y-8">
-            <h2 className="text-4xl font-bold serif">The Vanphal Promise</h2>
+            <h2 className="text-4xl lg:text-5xl font-bold serif leading-tight">Our Promise of Purity</h2>
             <p className="text-gray-500 font-light leading-relaxed text-lg">
-              We promise to never compromise on the purity of our preserves. Every batch is tasted by our lead orchardist, ensuring that the fruit integrity is maintained from the moment it leaves the tree to the moment it arrives at your table.
+              We promise to never compromise on the purity of our preserves. Every batch is tasted by our family, ensuring that the fruit integrity is maintained from the moment it leaves the tree to the moment it arrives at your table.
             </p>
-            <div className="flex gap-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 pt-4">
                <div>
                   <p className="text-3xl font-bold serif text-[#4a5d4e]">0%</p>
                   <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Pesticides</p>
                </div>
                <div>
                   <p className="text-3xl font-bold serif text-[#4a5d4e]">100%</p>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Transparency</p>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Handcrafted</p>
                </div>
                <div>
                   <p className="text-3xl font-bold serif text-[#4a5d4e]">50+</p>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Local Farmers</p>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Local Jobs</p>
                </div>
             </div>
           </div>
