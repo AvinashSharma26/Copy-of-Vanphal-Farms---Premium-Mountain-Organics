@@ -46,6 +46,14 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleQuickViewAdd = () => {
+    if (quickViewProduct) {
+      addToCart(quickViewProduct, qvQuantity);
+      setQuickViewProduct(null);
+      setQvQuantity(1);
+    }
+  };
+
   return (
     <div className="overflow-hidden bg-[#fcfbf7]">
       <section className="relative min-h-[95vh] flex items-center pt-24 px-6 lg:px-12">
@@ -68,7 +76,12 @@ const Home: React.FC = () => {
             </div>
             {products.length > 0 && (
               <div className="absolute -bottom-12 -left-12 bg-white/95 backdrop-blur-xl p-8 rounded-[3rem] shadow-2xl border border-white/50 max-w-xs animate-float">
-                <div className="w-full h-48 rounded-[2rem] overflow-hidden mb-6 shadow-inner"><img src={products[0].image} className="w-full h-full object-cover" alt="Jam" /></div>
+                <div className="w-full h-48 rounded-[2rem] overflow-hidden mb-6 shadow-inner relative group cursor-pointer" onClick={() => setQuickViewProduct(products[0])}>
+                  <img src={products[0].image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Jam" />
+                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="bg-white/90 px-4 py-2 rounded-full text-[8px] font-bold uppercase tracking-widest">Quick View</span>
+                  </div>
+                </div>
                 <h4 className="font-bold serif text-2xl mb-2 text-[#2d3a3a]">{products[0].name}</h4>
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-2xl serif">₹{products[0].price}</span>
@@ -124,8 +137,11 @@ const Home: React.FC = () => {
             <div ref={sliderRef} className="flex gap-8 overflow-x-auto scroll-hide snap-x snap-mandatory pb-10" style={{ scrollBehavior: 'smooth' }}>
               {filteredProducts.map(product => (
                 <div key={product.id} className="min-w-[280px] md:min-w-[380px] snap-center bg-white p-6 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group/item">
-                  <div className="relative aspect-square rounded-[2.5rem] overflow-hidden mb-6 bg-gray-50">
+                  <div className="relative aspect-square rounded-[2.5rem] overflow-hidden mb-6 bg-gray-50 group">
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-110" />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button onClick={(e) => { e.preventDefault(); setQuickViewProduct(product); }} className="bg-white/95 backdrop-blur-md text-[#1a2323] px-6 py-3 rounded-2xl font-bold text-[9px] uppercase tracking-widest hover:bg-[#1a2323] hover:text-white transition-all transform translate-y-2 group-hover:translate-y-0">Quick View</button>
+                    </div>
                   </div>
                   <h4 className="text-xl font-bold serif mb-2">{product.name}</h4>
                   <div className="flex justify-between items-center">
@@ -141,7 +157,38 @@ const Home: React.FC = () => {
 
       <FAQSection />
 
-      {/* Quick View and Offer Modal logic remains, now using live state from context */}
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-fadeIn">
+          <div className="bg-white w-full max-w-4xl rounded-[4rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row animate-slideUp">
+            <button onClick={() => setQuickViewProduct(null)} className="absolute top-8 right-8 z-10 p-2 bg-white/50 backdrop-blur-md rounded-full text-gray-500 hover:text-black transition-colors"><ICONS.Close /></button>
+            <div className="md:w-1/2 aspect-square md:aspect-auto">
+              <img src={quickViewProduct.image} className="w-full h-full object-cover" alt={quickViewProduct.name} />
+            </div>
+            <div className="md:w-1/2 p-10 lg:p-16 flex flex-col justify-center">
+              <span className="text-[#8b5e3c] text-[10px] uppercase font-bold tracking-[0.4em] mb-4 block">Quick Preview</span>
+              <h3 className="text-4xl font-bold serif mb-4 leading-tight">{quickViewProduct.name}</h3>
+              <p className="text-2xl font-bold serif text-[#4a5d4e] mb-6">₹{quickViewProduct.price}</p>
+              <p className="text-gray-500 mb-10 text-sm font-light leading-relaxed line-clamp-3">{quickViewProduct.description}</p>
+              
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center bg-gray-50 rounded-2xl overflow-hidden p-1">
+                    <button onClick={() => setQvQuantity(q => Math.max(1, q - 1))} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black font-bold">-</button>
+                    <span className="w-10 text-center font-bold">{qvQuantity}</span>
+                    <button onClick={() => setQvQuantity(q => q + 1)} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-black font-bold">+</button>
+                  </div>
+                  <button onClick={handleQuickViewAdd} disabled={quickViewProduct.status === 'out-of-stock'} className="flex-grow bg-[#1a2323] text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:shadow-2xl transition-all disabled:opacity-50">
+                    Add to Basket
+                  </button>
+                </div>
+                <Link to={`/product/${quickViewProduct.id}`} onClick={() => setQuickViewProduct(null)} className="text-center text-[10px] uppercase font-bold tracking-widest text-gray-400 hover:text-[#4a5d4e] transition-colors">View Full Product Story</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showOffer && activeOffer && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white w-full max-w-3xl rounded-[4rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row animate-slideUp">
