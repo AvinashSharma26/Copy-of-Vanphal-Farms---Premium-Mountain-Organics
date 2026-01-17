@@ -4,7 +4,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  weight: string;
+  weight: string; // New field for weight (e.g., "500g", "1kg")
   discountPercentage?: number;
   image: string;
   images?: string[]; 
@@ -100,8 +100,4 @@ export interface Offer {
 
 export interface OfferApplied extends Offer {
   discountCalculated: number;
-}
-
-export interface SiteSettings {
-  heroImages: string[];
 }
