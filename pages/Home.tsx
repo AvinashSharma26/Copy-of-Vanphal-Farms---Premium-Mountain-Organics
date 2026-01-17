@@ -41,7 +41,8 @@ const Home: React.FC = () => {
   const scrollSlider = (direction: 'left' | 'right') => {
     if (sliderRef.current) {
       const { scrollLeft, clientWidth } = sliderRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      const scrollAmount = clientWidth * 0.8; // Scroll 80% of view for smooth overlap
+      const scrollTo = direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount;
       sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
@@ -133,8 +134,17 @@ const Home: React.FC = () => {
               ))}
             </div>
           </div>
-          <div className="relative group">
-            <div ref={sliderRef} className="flex gap-8 overflow-x-auto scroll-hide snap-x snap-mandatory pb-10" style={{ scrollBehavior: 'smooth' }}>
+          <div className="relative group/slider-container">
+            {/* Left Scroll Button */}
+            <button 
+              onClick={() => scrollSlider('left')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 w-14 h-14 bg-white rounded-full shadow-2xl flex items-center justify-center text-[#4a5d4e] opacity-0 group-hover/slider-container:opacity-100 group-hover/slider-container:translate-x-4 transition-all duration-500 hover:bg-[#4a5d4e] hover:text-white border border-gray-100"
+              aria-label="Scroll Left"
+            >
+              <ICONS.ArrowLeft />
+            </button>
+
+            <div ref={sliderRef} className="flex gap-8 overflow-x-auto scroll-hide snap-x snap-mandatory pb-10 px-4" style={{ scrollBehavior: 'smooth' }}>
               {filteredProducts.map(product => (
                 <div key={product.id} className="min-w-[280px] md:min-w-[380px] snap-center bg-white p-6 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group/item">
                   <div className="relative aspect-square rounded-[2.5rem] overflow-hidden mb-6 bg-gray-50 group">
@@ -151,6 +161,15 @@ const Home: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            {/* Right Scroll Button */}
+            <button 
+              onClick={() => scrollSlider('right')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 w-14 h-14 bg-white rounded-full shadow-2xl flex items-center justify-center text-[#4a5d4e] opacity-0 group-hover/slider-container:opacity-100 group-hover/slider-container:-translate-x-4 transition-all duration-500 hover:bg-[#4a5d4e] hover:text-white border border-gray-100"
+              aria-label="Scroll Right"
+            >
+              <ICONS.ArrowRight />
+            </button>
           </div>
         </div>
       </section>
