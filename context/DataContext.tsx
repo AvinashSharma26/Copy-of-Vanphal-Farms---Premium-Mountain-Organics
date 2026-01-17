@@ -10,7 +10,7 @@ interface DataContextType {
   offers: Offer[];
   categories: string[];
   addProduct: (p: Product) => void;
-  updateProduct: (p: Product) => void;
+  updateProduct: (oldId: string, p: Product) => void;
   deleteProduct: (id: string) => void;
   addCategory: (name: string) => void;
   updateCategory: (oldName: string, newName: string) => void;
@@ -53,7 +53,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [categories]);
 
   const addProduct = (p: Product) => setProducts(prev => [p, ...prev]);
-  const updateProduct = (p: Product) => setProducts(prev => prev.map(item => item.id === p.id ? p : item));
+  
+  const updateProduct = (oldId: string, p: Product) => {
+    setProducts(prev => prev.map(item => item.id === oldId ? p : item));
+  };
+
   const deleteProduct = (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
   };
